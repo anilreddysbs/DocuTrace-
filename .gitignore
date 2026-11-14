@@ -1,0 +1,26 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local documents
+data/raw_pdfs/
+
+# Local vector database
+data/vector_db/
+
+# Generated experiment artifacts
+data/processed/*.npz
+data/processed/*embeddings*.json
+data/processed/*chunks*.json
+data/processed/*pages*.json
+
+# Streamlit secrets
+.streamlit/secrets.toml
