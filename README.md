@@ -1,5 +1,8 @@
 # DocuTrace — Multi-PDF RAG Assistant
 
+
+> **Portfolio:** [anilreddysbs.vercel.app](https://anilreddysbs.vercel.app) · [GitHub profile](https://github.com/anilreddysbs)
+
 DocuTrace is a Streamlit-based assistant for asking questions across multiple PDF documents. It extracts and chunks document text, creates local vector embeddings, retrieves relevant passages with dense and BM25-based search, and uses Google Gemini for answer generation when configured.
 
 ## Highlights
