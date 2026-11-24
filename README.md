@@ -1,67 +1,117 @@
-# DocuTrace
+# DocuTrace — Multi-PDF RAG Assistant
 
-DocuTrace is a local multi-PDF knowledge assistant built with Python, Streamlit, Sentence Transformers, ChromaDB, BM25, and Google Gemini.
+DocuTrace is a Streamlit-based assistant for asking questions across multiple PDF documents. It extracts and chunks document text, creates local vector embeddings, retrieves relevant passages with dense and BM25-based search, and uses Google Gemini for answer generation when configured.
 
-## Features
+## Highlights
 
-- Upload multiple PDFs in the sidebar
-- Extract, clean, and chunk text page by page
-- Use a reusable recursive chunking strategy based on the existing project experiments
-- Generate 384-dimensional MiniLM embeddings
-- Store vectors in a persistent local Chroma collection
-- Support dense and hybrid retrieval with reciprocal rank fusion
-- Show retrieved evidence and page citations
-- Run without a Gemini API key, while clearly warning that answer generation requires one
-- Include lightweight retrieval evaluation and app tests
+- Upload and index multiple PDF files
+- Extract text page by page and preserve page-level references
+- Split extracted content with a recursive chunking strategy
+- Generate 384-dimensional embeddings with a MiniLM Sentence Transformer
+- Persist vectors in a local ChromaDB collection
+- Combine dense retrieval and BM25 retrieval using reciprocal rank fusion
+- Display retrieved evidence with document and page references
+- Run indexing and retrieval without a Gemini key; configure a key for LLM-generated answers
+- Evaluate retrieval with Precision@K, Recall@K, and Mean Reciprocal Rank (MRR)
 
-## Project structure
+## Technology
 
-- `app.py` — Streamlit user interface
-- `src/docutrace/` — modular pipeline code
-- `data/raw_pdfs/` — original PDFs
-- `data/processed/` — extracted and processed experiment artifacts
-- `data/vector_db/chroma/` — persistent vector database
-- `tests/` — automated tests
+- Python
+- Streamlit
+- PyMuPDF
+- Sentence Transformers
+- ChromaDB
+- BM25 / Reciprocal Rank Fusion
+- Google GenAI SDK
 
-## Installation
+## Quick start
 
-1. Activate the project virtual environment:
-   `C:\Users\USER\Desktop\Gen_AI\DocuTrace_Rag\.venv\Scripts\activate`
-2. Install dependencies:
-   `python -m pip install -r requirements.txt`
-3. Copy `.env.example` to `.env` and add your API key if needed.
+### Prerequisites
 
-## Configuration
+- Python installed
+- pip
 
-Create a `.env` file with:
+### 1. Clone the repository
 
-```env
-GEMINI_API_KEY=your_key_here
-GEMINI_MODEL=gemini-2.0-flash
+```bash
+git clone https://github.com/anilreddysbs/DocuTrace-.git
+cd DocuTrace-
 ```
 
-If the API key is not configured, the app still launches and allows indexing and retrieval. It will show a clear message that LLM generation requires the key.
+### 2. Create a virtual environment
 
-## Running the app
+```bash
+python -m venv .venv
+```
 
-From the project root:
+Activate it:
+
+```bash
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+### 4. Configure Gemini (optional)
+
+Copy `.env.example` to `.env` and set your key:
+
+```dotenv
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=your-supported-gemini-model
+```
+
+Without a Gemini key, the app can still be launched for document indexing and retrieval; generated answers require a configured model key.
+
+### 5. Launch the app
 
 ```bash
 streamlit run app.py
 ```
 
+Streamlit prints a local URL in the terminal. Open that URL in your browser.
+
 ## Retrieval evaluation
 
-From the project root:
+Run the evaluation module from the repository root:
 
 ```bash
 python -m src.docutrace.evaluation.evaluate_retrieval
 ```
 
-The evaluation module contains a small dataset using the synthetic DataOps PDFs and computes Precision@K, Recall@K, and MRR for the retrieval results.
+The evaluation uses the sample DataOps documents and reports Precision@K, Recall@K, and MRR.
 
-## Notes
+Run the test suite with:
 
-- The recursive chunking configuration is aligned with the existing notebook experiments: around 800 characters with 120-character overlap.
-- Chroma uses local persistent storage under `data/vector_db/chroma`.
-- The production application avoids hard-coded secrets and keeps the Gemini key in environment variables.
+```bash
+pytest
+```
+
+## Project structure
+
+```text
+app.py                  Streamlit application
+src/docutrace/          Document processing and retrieval modules
+notebooks/              Experiments and development notebooks
+tests/                  Automated tests
+data/raw_pdfs/          Uploaded or sample source PDFs (runtime data)
+data/processed/         Extracted text and chunk artifacts (runtime data)
+data/vector_db/chroma/  Persistent local ChromaDB data (runtime data)
+```
+
+The `data/` directories are runtime storage locations and may be created when the application is used.
+
+## Configuration notes
+
+- Keep API keys in environment variables; do not commit real credentials.
+- The recursive chunking experiment currently uses approximately 800-character chunks with 120-character overlap.
+- ChromaDB stores its local persistent collection under `data/vector_db/chroma`.
